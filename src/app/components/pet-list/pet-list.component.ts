@@ -31,7 +31,14 @@ const PET_LIST: Pet[] = [
   styleUrls: ['./pet-list.component.css'],
 })
 export class PetListComponent implements AfterViewInit {
-  displayedColumns: string[] = ['name', 'age', 'race', 'weight', 'color'];
+  displayedColumns: string[] = [
+    'name',
+    'age',
+    'race',
+    'weight',
+    'color',
+    'actions',
+  ];
   dataSource = new MatTableDataSource<Pet>(PET_LIST);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
