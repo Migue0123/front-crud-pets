@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Pet } from 'src/app/interface/pet';
@@ -40,9 +41,12 @@ export class PetListComponent implements AfterViewInit {
     'actions',
   ];
   dataSource = new MatTableDataSource<Pet>(PET_LIST);
+  loading: boolean = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+
+  constructor(private _snackBar: MatSnackBar) {}
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
@@ -57,5 +61,15 @@ export class PetListComponent implements AfterViewInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+
+  deletePet() {
+    this.loading = true;
+    setTimeout(() => {
+      this._snackBar.open('La mascota fue eliminada con éxito', '', {
+        duration: 3000,
+      });
+      this.loading = false;
+    }, 3000);
   }
 }
