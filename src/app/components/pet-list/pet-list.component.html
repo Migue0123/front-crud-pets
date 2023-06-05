@@ -4,14 +4,9 @@
 
 <app-spinner *ngIf="loading"></app-spinner>
 
-<div class="container">
+<div *ngIf="dataSource.data.length > 0" class="container">
   <mat-form-field>
     <mat-label>Filtro</mat-label>
-    <!-- <mat-icon
-      aria-hidden="false"
-      aria-label="Example home icon"
-      fontIcon="search"
-    ></mat-icon> -->
     <input
       matInput
       (keyup)="applyFilter($event)"
@@ -60,7 +55,7 @@
       </th>
       <td mat-cell *matCellDef="let element">
         <mat-icon
-          routerLink="/seePet/1"
+          routerLink="/seePet/{{ element.id }}"
           class="search"
           matTooltip="Ver"
           aria-hidden="false"
