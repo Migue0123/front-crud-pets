@@ -63,13 +63,25 @@ export class PetListComponent implements AfterViewInit, OnInit {
     });
   }
 
-  deletePet() {
+  deletePet(id: number) {
     this.loading = true;
-    setTimeout(() => {
-      this._snackBar.open('La mascota fue eliminada con éxito', '', {
-        duration: 3000,
-      });
-      this.loading = false;
-    }, 3000);
+
+    this.petService.deletePet(id).subscribe({
+      next: () => {
+        this.successMessage();
+        this.loading = false;
+        this.getPets();
+      },
+      error: () => console.log('Ha ocurrido un error al eliminar la mascota'),
+      complete: () => {
+        console.log('deletePet complete');
+      },
+    });
+  }
+
+  successMessage() {
+    this._snackBar.open('La mascota fue eliminada con éxito', '', {
+      duration: 3000,
+    });
   }
 }

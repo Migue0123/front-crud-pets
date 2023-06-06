@@ -20,4 +20,8 @@ export class PetService {
   getPet(id: number): Observable<Pet> {
     return this.http.get<Pet>(`${this.myAppUrl}${this.myApiUrl}${id}`);
   }
+
+  deletePet(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.myAppUrl}${this.myApiUrl}${id}`);
+  }
 }
