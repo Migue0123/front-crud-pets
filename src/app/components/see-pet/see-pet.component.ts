@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { Pet } from 'src/app/interface/pet';
 import { PetService } from 'src/app/services/pet.service';
 
@@ -19,14 +19,14 @@ export class SeePetComponent implements OnInit, OnDestroy {
 
   constructor(
     private petService: PetService,
-    private activateRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute
   ) {
     //Solo se atrapa el id cuando entra por primera vez al componente
-    //this.id = parseInt(this.activateRoute.snapshot.paramMap.get('id')!);
+    //this.id = parseInt(this.activatedRoute.snapshot.paramMap.get('id')!);
   }
 
   ngOnInit(): void {
-    this.routeSub = this.activateRoute.params.subscribe((data) => {
+    this.routeSub = this.activatedRoute.params.subscribe((data) => {
       this.id = data['id'];
       this.getPet();
     });
@@ -45,7 +45,8 @@ export class SeePetComponent implements OnInit, OnDestroy {
       next: (data) => {
         (this.loading = false), (this.pet = data);
       },
-      error: (error) => console.log(error),
+      error: () =>
+        console.log('Ha ocurrido un error al momento de buscar la mascota'),
       complete: () => console.log('getPet complete'),
     });
   }

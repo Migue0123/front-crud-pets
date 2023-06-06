@@ -4,7 +4,7 @@
 
 <app-spinner *ngIf="loading"></app-spinner>
 
-<div *ngIf="dataSource.data.length > 0" class="container">
+<div class="container">
   <mat-form-field>
     <mat-label>Filtro</mat-label>
     <input
@@ -50,7 +50,7 @@
           mat-raised-button
           color="primary"
         >
-          Aceptar
+          Agregar
         </button>
       </th>
       <td mat-cell *matCellDef="let element">
@@ -63,7 +63,7 @@
           fontIcon="search"
         ></mat-icon>
         <mat-icon
-          routerLink="/editPet/1"
+          routerLink="/editPet/{{ element.id }}"
           class="edit"
           matTooltip="Editar"
           aria-hidden="false"

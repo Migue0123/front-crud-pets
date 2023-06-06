@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { Pet } from 'src/app/interface/pet';
 import { PetService } from 'src/app/services/pet.service';
 
@@ -9,14 +10,20 @@ import { PetService } from 'src/app/services/pet.service';
   templateUrl: './add-edit-pet.component.html',
   styleUrls: ['./add-edit-pet.component.css'],
 })
-export class AddEditPetComponent {
+export class AddEditPetComponent implements OnInit, OnDestroy {
   loading: boolean = false;
   form: FormGroup;
+  id: string | null = '0';
+  operacion: string = 'Agregar';
+  dataPet!: Pet;
+
+  paramSub!: Subscription;
 
   constructor(
     private formBuilder: FormBuilder,
     private petService: PetService,
-    private router: Router
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {
     this.form = this.formBuilder.group({
       name: ['', Validators.required],
@@ -27,7 +34,40 @@ export class AddEditPetComponent {
     });
   }
 
-  addPet() {
+  ngOnInit(): void {
+    this.paramSub = this.activatedRoute.paramMap.subscribe((data) => {
+      this.id = data.get('id');
+    });
+
+    if (this.id != null) {
+      this.operacion = 'Editar';
+      this.getPet(Number(this.id));
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.paramSub.unsubscribe();
+  }
+
+  getPet(id: number) {
+    this.loading = true;
+    this.petService.getPet(id).subscribe({
+      next: (data) => {
+        this.form.setValue({
+          name: data.name,
+          race: data.race,
+          color: data.color,
+          age: data.age,
+          weight: data.weight,
+        });
+        this.loading = false;
+      },
+      error: () => console.log('Ha ocurrido un error al traer la mascota'),
+      complete: () => console.log('getPet complete'),
+    });
+  }
+
+  addEditPet() {
     //const name = this.form.get('name')?.value;
     //const name = this.form.value.name;
 
@@ -39,17 +79,37 @@ export class AddEditPetComponent {
       weight: this.form.value.weight,
     };
 
-    console.log(pet);
-    //Consumo de endpoint
-    this.petService.postPet(pet).subscribe({
+    if (this.id != null) {
+      pet.id = parseInt(this.id);
+      this.editPet(parseInt(this.id), pet);
+    } else {
+      this.addPet(pet);
+    }
+  }
+
+  addPet(pet: Pet) {
+    this.loading = true;
+    this.petService.AddPet(pet).subscribe({
       next: () => {
         this.petService.successMessage('¡La mascota fue registrada con éxito!');
         this.router.navigate(['/listPets']);
+        this.loading = false;
       },
       error: () => console.log('Ha ocurrido un error al crear la mascota'),
       complete: () => console.log('postPet complete'),
     });
+  }
 
-    this.form.reset;
+  editPet(id: number, pet: Pet) {
+    this.loading = true;
+    this.petService.updatePet(id, pet).subscribe({
+      next: () => {
+        this.petService.successMessage('¡La mascota fue editada con éxito!');
+        this.router.navigate(['/listPets']);
+        this.loading = false;
+      },
+      error: () => console.log('Ha ocurrido un error al editar la mascota'),
+      complete: () => console.log('updatePet complete'),
+    });
   }
 }
