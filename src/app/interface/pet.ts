@@ -1,8 +1,8 @@
 export interface Pet {
   id?: number;
   name: string;
-  age: number;
+  age: string;
   race: string;
   color: string;
-  weight: string;
+  weight: number;
 }

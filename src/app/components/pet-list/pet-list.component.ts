@@ -26,7 +26,7 @@ export class PetListComponent implements AfterViewInit, OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private _snackBar: MatSnackBar, private petService: PetService) {}
+  constructor(private petService: PetService) {}
 
   ngOnInit(): void {
     this.getPets();
@@ -68,7 +68,7 @@ export class PetListComponent implements AfterViewInit, OnInit {
 
     this.petService.deletePet(id).subscribe({
       next: () => {
-        this.successMessage();
+        this.petService.successMessage('¡La mascota fue eliminada con éxito!');
         this.loading = false;
         this.getPets();
       },
@@ -76,12 +76,6 @@ export class PetListComponent implements AfterViewInit, OnInit {
       complete: () => {
         console.log('deletePet complete');
       },
-    });
-  }
-
-  successMessage() {
-    this._snackBar.open('La mascota fue eliminada con éxito', '', {
-      duration: 3000,
     });
   }
 }
